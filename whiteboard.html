@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title></title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="./style.css">
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+
+    <script src="./script.js"></script>
+  </head>
+  <body>
+  <div class="container-fluid" id="main">
+    <div class="row">
+      <div class="boardContainer col-md-12" onclick="saveCoords()">
+        <div class="row">
+          <div class="col-md-12 buttonColours">
+
+            <button class="colour btn" data-value="DeepPink"><i class='fa fa-square fa-2x'></i></button>
+            <button class="colour btn" data-value="red"><i class='fa fa-square fa-2x'></i></button>
+            <button class="colour btn" data-value="orangered"><i class='fa fa-square fa-2x'></i></button>
+            <button class="colour btn" data-value="orange"><i class='fa fa-square fa-2x'></i></button>
+
+            <button class="colour btn" data-value="yellow"><i class='fa fa-square fa-2x'></i></button>
+            <button class="colour btn" data-value="greenyellow"><i class='fa fa-square fa-2x'></i></button>
+            <button class="colour btn" data-value="green"><i class='fa fa-square fa-2x'></i></button>
+            <button class="colour btn" data-value="teal"><i class='fa fa-square fa-2x'></i></button>
+            <button class="colour btn" data-value="blue"><i class='fa fa-square fa-2x'></i></button>
+            <button class="colour btn" data-value="darkblue"><i class='fa fa-square fa-2x'></i></button>
+            <button class="colour btn" data-value="indigo"><i class='fa fa-square fa-2x'></i></button>
+            <button class="colour btn" data-value="purple"><i class='fa fa-square fa-2x'></i></button>
+            <button class="colour btn" data-value="brown"><i class='fa fa-square fa-2x'></i></button>
+            <button class="colour btn" data-value="black"><i class='fa fa-square fa-2x'></i></button>
+          </div>
+        </div>
+        <canvas id="board" onmousemove="getCoords(event)" onmouseenter="enterBox()" onmouseleave="exitBox()">Please use a newer browser
+        </canvas>
+        <div class="row">
+          <div class="col-md-12 clear">
+            <button onclick="clearAll()">Clear All</button>
+            <button onclick="undo()">Undo</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
