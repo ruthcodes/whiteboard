@@ -34,7 +34,7 @@ $(document).ready(function(){
       savedCoords = [];
     // push a 0 to mark where one line ends and next begins
     // if event triggers multiple times (bubbling) this prevents multiple 0s
-    if (savedLines[savedLines.length - 1] != 0){
+    if (canDraw && savedLines[savedLines.length - 1] != 0){
       savedLines.push(0);
     }
 
@@ -115,28 +115,32 @@ function undo(){
   // loop through lines from last object towards beginning
   // splice result off array until you reach a 0.
   //pop off zero at the end so you are on an object
-  console.log(savedLines);
-  console.log(savedLines.length);
-  if (savedLines[savedLines.length - 1] == 0){
+
+  if (savedLines[savedLines.length -1 ] == 0){
     savedLines.splice(savedLines.length - 1, 1);
   }
+  // make a copy to loop over to preserve length while splicing
+  var copy = savedLines.slice(0);
 
-  for (let i = 0; i < savedLines.length - 1; i++){
+  for (let i = 0; i < copy.length; i++){
     //loop through popping off objects until you find a 0
     if (savedLines[savedLines.length-1] == 0){
-      savedLines.splice(savedLines.length - 1, 1);
       break;
     } else {
       savedLines.splice(savedLines.length - 1, 1);
     }
-
   }
 
-  console.log(savedLines);
   // draw the canvas agasin
   redraw();
 }
 
+function clickedClear(){
+  //remove saved lines only if clear all clicked
+  // otherwise clearing before redrawing on undo will break
+  savedLines = [];
+  clearAll();
+}
 // clear the canvas
 function clearAll(){
   context.clearRect(0, 0, canvas.width, canvas.height);
@@ -150,9 +154,7 @@ function redraw(){
   //if first is a 0, remove it - this should move inside the whole loop
   for (let i = 0; i < savedLines.length - 1; i++){
     if (savedLines[i] == 0){
-
       continue;
-
     } else {
       colour = savedLines[i]['colour'];
       penWidth = savedLines[i]['penWidth'];
