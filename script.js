@@ -3,7 +3,10 @@ $(document).ready(function(){
   // set the colour of button icon
   $('.colour').each(function(){
     colour = $(this).attr('data-value');
-    $(this).css('color', colour);
+    if (colour != "white"){
+      $(this).css('color', colour);
+    }
+    colour = 'black';
   })
 
   // set colour variable to whatever button was clicked
@@ -79,6 +82,7 @@ var x;
 var y;
 var colour = 'black';
 var penWidth = 5;
+var opacity = 1.0;
 
 // true when inside canvas
 var canDraw = false;
@@ -106,6 +110,30 @@ function enterBox(){
 //called on mouseleave
 function exitBox(){
   canDraw = false;
+}
+
+function enterBox(){
+  canDraw = true;
+}
+//called on mouseleave
+function exitBox(){
+  canDraw = false;
+}
+
+function highlighter(){
+  console.log("pen width to 7");
+  penWidth = 15;
+  opacity =  0.1;
+}
+
+function marker(){
+  penWidth = 5;
+  opacity = 1.0;
+}
+
+function pencil(){
+  penWidth = 2;
+  opacity = 1.0;
 }
 
 // array to store coordinates mouse moved over while clicked
@@ -176,6 +204,7 @@ function redraw(){
       penWidth = savedLines[i]['penWidth'];
       context.strokeStyle=colour;
       context.lineWidth=penWidth;
+      context.globalAlpha=opacity;
       context.beginPath();
       context.moveTo(savedLines[i]['x'], savedLines[i]['y']);
       context.lineTo(savedLines[i+1]['x'],savedLines[i+1]['y']);
@@ -196,7 +225,8 @@ function drawLine(){
         context.moveTo(savedCoords[i][0],savedCoords[i][1]);
         context.lineTo(savedCoords[i+1][0],savedCoords[i+1][1]);
         context.strokeStyle=colour;
-        context.lineWidth=5;
+        context.lineWidth=penWidth;
+        context.globalAlpha=opacity;
         context.stroke();
         context.closePath();
       }
