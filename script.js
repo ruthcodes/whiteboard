@@ -12,8 +12,24 @@ $(document).ready(function(){
       console.log(colour);
    });
 
+   function checkWidth(){
+     if ($( document ).width() <= 600){
+       canvas.width = 300;
+     } else if ($( document ).width() <= 800){
+       canvas.width = 500;
+     } else if ($( document ).width() <= 900){
+       canvas.width = 600;
+     } else {
+       canvas.width = 800;
+     }
+   }
 
+   checkWidth();
 
+   $( window ).resize(function() {
+     checkWidth();
+     redraw();
+   });
   //Listeners
   document.addEventListener("mousedown", function(){
       if (canDraw){
@@ -33,7 +49,7 @@ $(document).ready(function(){
       }
       savedCoords = [];
     // push a 0 to mark where one line ends and next begins
-    // if event triggers multiple times (bubbling) this prevents multiple 0s
+    // ignore mouseUp where the user is not drawing
     if (canDraw && savedLines[savedLines.length - 1] != 0){
       savedLines.push(0);
     }
