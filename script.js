@@ -115,12 +115,16 @@ function undo(){
   // loop through lines from last object towards beginning
   // splice result off array until you reach a 0.
   //pop off zero at the end so you are on an object
+  console.log(savedLines);
+  console.log(savedLines.length);
   if (savedLines[savedLines.length - 1] == 0){
     savedLines.splice(savedLines.length - 1, 1);
   }
-  for (let i = 0; i < savedLines.length; i++){
+
+  for (let i = 0; i < savedLines.length - 1; i++){
     //loop through popping off objects until you find a 0
     if (savedLines[savedLines.length-1] == 0){
+      savedLines.splice(savedLines.length - 1, 1);
       break;
     } else {
       savedLines.splice(savedLines.length - 1, 1);
@@ -128,7 +132,7 @@ function undo(){
 
   }
 
-  //console.log(savedLines);
+  console.log(savedLines);
   // draw the canvas agasin
   redraw();
 }
@@ -139,18 +143,24 @@ function clearAll(){
 }
 
 function redraw(){
+  //clear the canvas before re-drawing it
+  clearAll();
   // set colour and width based on first object, skip 0
   //draw until you reach a 0
   //if first is a 0, remove it - this should move inside the whole loop
   for (let i = 0; i < savedLines.length - 1; i++){
     if (savedLines[i] == 0){
-      colour = savedLines[i+1]['colour'];
-      penWidth = savedLines[i+1]['penWidth'];
+
       continue;
+
     } else {
+      colour = savedLines[i]['colour'];
+      penWidth = savedLines[i]['penWidth'];
+      context.strokeStyle=colour;
+      context.lineWidth=penWidth;
       context.beginPath();
       context.moveTo(savedLines[i]['x'], savedLines[i]['y']);
-      context.lineTo(savedCoords[i+1]['x'],savedCoords[i+1]['y']);
+      context.lineTo(savedLines[i+1]['x'],savedLines[i+1]['y']);
       context.stroke();
       context.closePath();
     }
