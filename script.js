@@ -229,11 +229,15 @@ function redraw(){
   clearAll();
   //if first is a 0, remove it - this should move inside the whole loop
   for (let i = 0; i < savedLines.length - 1; i++){
+    if (savedLines[i] == 0){
+      continue;
+    } else {
       // set colour/width to current line settings
       colour = savedLines[i]['colour'];
       penWidth = savedLines[i]['penWidth'];
       opacity = savedLines[i]['opacity'];
       draw(savedLines, i);
+    }
   }
 }
 
