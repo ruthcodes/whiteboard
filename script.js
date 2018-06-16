@@ -14,8 +14,14 @@ $(document).ready(function(){
 
   // set colour variable to whatever button was clicked
   $('.colour').on("click", function(event){
+      if (penWidth == 5 && colour == 'white'){
+        // prevent user from colouring with eraser
+        $('.palette').css('background-color', 'white');
+        return 0;
+      }
       colour = $(this).attr('data-value');
-      console.log(colour);
+      $('.palette').css('background-color', 'white');
+      $(this).css('background-color', '#bdbdbd');
    });
 
    // resize canvas based on browser adjustments
@@ -37,6 +43,9 @@ $(document).ready(function(){
      checkWidth();
      redraw();
    });
+   // set decoration for black pen button selected on start
+   $('#marker').css('background-color', '#bdbdbd');
+   $('.colour[data-value="black"]').css('background-color', '#bdbdbd');
 
   //Listeners
   document.addEventListener("mousedown", function(){
@@ -115,19 +124,41 @@ function exitBox(){
 }
 
 function highlighter(){
-  console.log("pen width to 7");
+  $(".action").css('background-color', 'white');
+  $('#highlighter').css('background-color', '#bdbdbd');
   penWidth = 15;
   opacity =  0.3;
+  if (colour == 'white'){
+    colour = 'black';
+    $('.colour[data-value="black"]').css('background-color', '#bdbdbd');
+  }
 }
 
-function marker(){
+function marker(pen){
+  $(".action").css('background-color', 'white');
   penWidth = 5;
   opacity = 1.0;
+
+  if (pen == 'eraser'){
+    $('#eraser').css('background-color', '#bdbdbd');
+    colour = 'white';
+    $('.palette').css('background-color', 'white');
+  } else {
+    $('#marker').css('background-color', '#bdbdbd');
+    colour = 'black';
+    $('.colour[data-value="black"]').css('background-color', '#bdbdbd');
+  }
 }
 
 function pencil(){
+  $(".action").css('background-color', 'white');
+  $('#pencil').css('background-color', '#bdbdbd');
   penWidth = 2;
   opacity = 1.0;
+  if (colour == 'white'){
+    colour = 'black';
+    $('.colour[data-value="black"]').css('background-color', '#bdbdbd');
+  }
 }
 
 
@@ -153,6 +184,12 @@ function saveCoords(){
 // on undo, take last move and remove it from array
 // clear entire board, then redraw again from array (that is now missing the last move)
 function undo(){
+
+  $('#undo').css('background-color', '#bdbdbd');
+  setTimeout(function(){
+    $('#undo').css('background-color', 'white');
+  }, 300);
+
   //pop off zero at the end so you are on an object
   if (savedLines[savedLines.length -1 ] == 0){
     savedLines.splice(savedLines.length - 1, 1);
@@ -174,6 +211,10 @@ function undo(){
 function clickedClear(){
   //remove saved lines only if clear all clicked
   // otherwise clearing before redrawing on undo will break
+  $('#trash').css('background-color', '#bdbdbd');
+  setTimeout(function(){
+    $('#trash').css('background-color', 'white');
+  }, 300);
   savedLines = [];
   clearAll();
 }
