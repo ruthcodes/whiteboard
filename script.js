@@ -1,11 +1,14 @@
 $(document).ready(function(){
+  //set up canvas
   makeCanvas();
-  // set the colour of button icon
+
+  // set the colour of button icons
   $('.colour').each(function(){
     colour = $(this).attr('data-value');
     if (colour != "white"){
       $(this).css('color', colour);
     }
+    // reset pen colour to black once done
     colour = 'black';
   })
 
@@ -15,6 +18,7 @@ $(document).ready(function(){
       console.log(colour);
    });
 
+   // resize canvas based on browser adjustments
    function checkWidth(){
      if ($( document ).width() <= 600){
        canvas.width = 300;
@@ -26,54 +30,53 @@ $(document).ready(function(){
        canvas.width = 800;
      }
    }
-
+   // check the browser width on load
    checkWidth();
-
+   // check the browser with on resize
    $( window ).resize(function() {
      checkWidth();
      redraw();
    });
+
   //Listeners
   document.addEventListener("mousedown", function(){
       if (canDraw){
         mouseDown = true;
       }
-      //saveCoords();
+      saveCoords();
   });
 
   document.addEventListener("mouseup", function(){
       mouseDown = false;
       if (savedCoords.length == 1){
-        // being and end path so each line is a separate entity
+        // fall back in case only 1 coord in array (a single dot)
         context.beginPath();
         context.fillStyle=colour;
-        context.fillRect(savedCoords[0][0], savedCoords[0][1], penWidth, penWidth);
+        context.fillRect(savedCoords[0]['x'], savedCoords[0]['y'], penWidth, penWidth);
         context.closePath();
       }
       savedCoords = [];
+
     // push a 0 to mark where one line ends and next begins
     // ignore mouseUp where the user is not drawing
     if (canDraw && savedLines[savedLines.length - 1] != 0){
       savedLines.push(0);
     }
-
-
   });
 
   window.addEventListener('mousemove', saveCoords);
 
-  //if a coord is not directly next to another (the x or y), draw a direct line between them
-
 });
 
+// initialise the canvas and set its height/width
 function makeCanvas(){
-  // initialise the canvas and set its height/width
   canvas = document.getElementById("board");
   canvas.width = 800;
   canvas.height = 400;
   context = canvas.getContext("2d");
   document.getElementById('board').draggable = false;
 }
+// variables to store canvas details
 var canvas;
 var context;
 
@@ -100,18 +103,9 @@ function getCoords(event){
   which here would be 10 */
   x = (event.clientX - size.left);
   y = (event.clientY - size.top);
-
 }
 
 // called on mouseenter
-function enterBox(){
-  canDraw = true;
-}
-//called on mouseleave
-function exitBox(){
-  canDraw = false;
-}
-
 function enterBox(){
   canDraw = true;
 }
@@ -136,6 +130,7 @@ function pencil(){
   opacity = 1.0;
 }
 
+
 // array to store coordinates mouse moved over while clicked
 var savedCoords = [];
 // save line coords, colour and pen style
@@ -145,7 +140,7 @@ var savedLines = [];
 function saveCoords(){
   if (canDraw && mouseDown){
       //push coordinates to array
-      thisCoord = [x,y]
+      thisCoord = {'x': x, 'y': y};
       savedCoords.push(thisCoord);
       savedLines.push({'x': x, 'y': y, 'colour': colour, 'penWidth': penWidth, 'opacity': opacity});
       if (savedCoords.length > 2){
@@ -154,31 +149,25 @@ function saveCoords(){
       drawLine();
    }
 }
+
 // on undo, take last move and remove it from array
 // clear entire board, then redraw again from array (that is now missing the last move)
 function undo(){
-  //console.log(savedLines);
-  //console.log(savedLines[0]['colour']);
-  // loop through lines from last object towards beginning
-  // splice result off array until you reach a 0.
   //pop off zero at the end so you are on an object
-
   if (savedLines[savedLines.length -1 ] == 0){
     savedLines.splice(savedLines.length - 1, 1);
   }
   // make a copy to loop over to preserve length while splicing
   var copy = savedLines.slice(0);
-
+  //loop through popping off objects until you find a 0
   for (let i = 0; i < copy.length; i++){
-    //loop through popping off objects until you find a 0
     if (savedLines[savedLines.length-1] == 0){
       break;
     } else {
       savedLines.splice(savedLines.length - 1, 1);
     }
   }
-
-  // draw the canvas agasin
+  // draw the canvas again
   redraw();
 }
 
@@ -193,54 +182,43 @@ function clearAll(){
   context.clearRect(0, 0, canvas.width, canvas.height);
 }
 
+// redraws board
 function redraw(){
   //clear the canvas before re-drawing it
   clearAll();
-  // set colour and width based on first object, skip 0
-  //draw until you reach a 0
   //if first is a 0, remove it - this should move inside the whole loop
   for (let i = 0; i < savedLines.length - 1; i++){
-    if (savedLines[i] == 0){
-      continue;
-    } else {
+      // set colour/width to current line settings
       colour = savedLines[i]['colour'];
       penWidth = savedLines[i]['penWidth'];
       opacity = savedLines[i]['opacity'];
-      setStyle();
-      
-      context.beginPath();
-      context.moveTo(savedLines[i]['x'], savedLines[i]['y']);
-      context.lineTo(savedLines[i+1]['x'],savedLines[i+1]['y']);
-      context.stroke();
-      context.closePath();
-    }
+      draw(savedLines, i);
   }
 }
 
-function setStyle(){
-  context.strokeStyle=colour;
-  context.lineWidth=penWidth;
-  context.globalAlpha=opacity;
-}
-
+// draws line while pen is moving
 function drawLine(){
-
   //loop through the array of coordinates and connect them with a line if they are not directly next to each other
   for (let i = 0; i < savedCoords.length-1; i++){
     if (savedCoords.length > 1) {
-
       // if x is not directly next to x, or y not next to y
       if ((savedCoords[i][0] != savedCoords[i+1][0]+1) || (savedCoords[i][1] != savedCoords[i+1][1]+1)){
         // set start and end, draw line between them
-        context.beginPath();
-        context.moveTo(savedCoords[i][0],savedCoords[i][1]);
-        context.lineTo(savedCoords[i+1][0],savedCoords[i+1][1]);
-        context.strokeStyle=colour;
-        context.lineWidth=penWidth;
-        context.globalAlpha=opacity;
-        context.stroke();
-        context.closePath();
+        draw(savedCoords , i);
       }
     }
   }
+}
+
+function draw(array, i){
+  //set style
+  context.strokeStyle=colour;
+  context.lineWidth=penWidth;
+  context.globalAlpha=opacity;
+  // draw line between given points
+  context.beginPath();
+  context.moveTo(array[i]['x'],array[i]['y']);
+  context.lineTo(array[i+1]['x'],array[i+1]['y']);
+  context.stroke();
+  context.closePath();
 }
