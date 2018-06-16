@@ -34,16 +34,25 @@ body{
   #board {
     width: 600px;
   }
+  button{
+    margin-bottom: 3px;
+  }
 }
 
 @media (max-width:800px){
   #board {
     width: 500px;
   }
+  button{
+    margin-bottom: 3px;
+  }
 }
 
 @media (max-width:600px){
   #board {
     width: 300px;
+  }
+  button{
+    margin-bottom: 3px;
   }
 }
