@@ -38,7 +38,7 @@ $(document).ready(function(){
       if (canDraw){
         mouseDown = true;
       }
-      saveCoords();
+      //saveCoords();
   });
 
   document.addEventListener("mouseup", function(){
@@ -123,7 +123,7 @@ function exitBox(){
 function highlighter(){
   console.log("pen width to 7");
   penWidth = 15;
-  opacity =  0.1;
+  opacity =  0.3;
 }
 
 function marker(){
@@ -147,7 +147,10 @@ function saveCoords(){
       //push coordinates to array
       thisCoord = [x,y]
       savedCoords.push(thisCoord);
-      savedLines.push({'x': x, 'y': y, 'colour': colour, 'penWidth': penWidth})
+      savedLines.push({'x': x, 'y': y, 'colour': colour, 'penWidth': penWidth, 'opacity': opacity});
+      if (savedCoords.length > 2){
+        savedCoords.splice(0,1);
+      }
       drawLine();
    }
 }
@@ -202,9 +205,9 @@ function redraw(){
     } else {
       colour = savedLines[i]['colour'];
       penWidth = savedLines[i]['penWidth'];
-      context.strokeStyle=colour;
-      context.lineWidth=penWidth;
-      context.globalAlpha=opacity;
+      opacity = savedLines[i]['opacity'];
+      setStyle();
+      
       context.beginPath();
       context.moveTo(savedLines[i]['x'], savedLines[i]['y']);
       context.lineTo(savedLines[i+1]['x'],savedLines[i+1]['y']);
@@ -214,10 +217,18 @@ function redraw(){
   }
 }
 
+function setStyle(){
+  context.strokeStyle=colour;
+  context.lineWidth=penWidth;
+  context.globalAlpha=opacity;
+}
+
 function drawLine(){
+
   //loop through the array of coordinates and connect them with a line if they are not directly next to each other
   for (let i = 0; i < savedCoords.length-1; i++){
     if (savedCoords.length > 1) {
+
       // if x is not directly next to x, or y not next to y
       if ((savedCoords[i][0] != savedCoords[i+1][0]+1) || (savedCoords[i][1] != savedCoords[i+1][1]+1)){
         // set start and end, draw line between them
