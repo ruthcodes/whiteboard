@@ -24,6 +24,8 @@ $(document).ready(function(){
       $(this).css('background-color', '#bdbdbd');
    });
 
+
+
    // resize canvas based on browser adjustments
    function checkWidth(){
      if ($( document ).width() <= 600){
@@ -95,6 +97,9 @@ var y;
 var colour = 'black';
 var penWidth = 5;
 var opacity = 1.0;
+// copies of colour and width to keep track while undoing
+var c;
+var w;
 
 // true when inside canvas
 var canDraw = false;
@@ -130,6 +135,7 @@ function highlighter(){
   opacity =  0.3;
   if (colour == 'white'){
     colour = 'black';
+    $('.palette').css('background-color', 'white');
     $('.colour[data-value="black"]').css('background-color', '#bdbdbd');
   }
 }
@@ -139,14 +145,20 @@ function marker(pen){
   penWidth = 5;
   opacity = 1.0;
 
+  $('.palette').css('background-color', 'white');
   if (pen == 'eraser'){
     $('#eraser').css('background-color', '#bdbdbd');
     colour = 'white';
-    $('.palette').css('background-color', 'white');
   } else {
+    // on marker selection, keep previous colour unless white
+    if (colour == "white"){
+      colour = 'black';
+      $('.colour[data-value="black"]').css('background-color', '#bdbdbd');
+    }
+
+    $('.colour[data-value=' + colour + ']').css('background-color', '#bdbdbd');
     $('#marker').css('background-color', '#bdbdbd');
-    colour = 'black';
-    $('.colour[data-value="black"]').css('background-color', '#bdbdbd');
+
   }
 }
 
@@ -184,7 +196,10 @@ function saveCoords(){
 // on undo, take last move and remove it from array
 // clear entire board, then redraw again from array (that is now missing the last move)
 function undo(){
-
+  //save whatever the last move was
+  c = colour;
+  w = penWidth;
+  // make undo button flash
   $('#undo').css('background-color', '#bdbdbd');
   setTimeout(function(){
     $('#undo').css('background-color', 'white');
@@ -237,6 +252,21 @@ function redraw(){
       penWidth = savedLines[i]['penWidth'];
       opacity = savedLines[i]['opacity'];
       draw(savedLines, i);
+    }
+  }
+  // once done redrawing/undoing, set pen to whatever was saved before undo
+  colour = c;
+  if (colour == "white"){
+    marker("eraser");
+  } else {
+    $('.palette').css('background-color', 'white');
+    $('.colour[data-value=' + colour + ']').css('background-color', '#bdbdbd');
+    if (w == 5){
+      marker("pen");
+    } else if (w == 15){
+      highlighter();
+    } else {
+      pencil();
     }
   }
 }
