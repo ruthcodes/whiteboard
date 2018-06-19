@@ -30,6 +30,15 @@ body {
   text-align: center;
 }
 
+.form{
+  text-align: center;
+}
+
+.formContainer {
+  padding-left: 200px;
+  padding-right: 200px;
+}
+
 @media (max-width:900px){
   #board {
     width: 600px;

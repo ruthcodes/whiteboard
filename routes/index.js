@@ -8,4 +8,9 @@ router.get('/', function(req, res, next) {
   res.sendfile("./views/whiteboard.html");
 });
 
+
+router.get('/login', function(req, res, next) {
+  res.sendfile("./views/login.html");
+});
+
 module.exports = router;
