@@ -6,31 +6,11 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-var config = require('./config');
+
 var app = express();
+var bodyParser = require('body-parser');
 
 var mysql = require('mysql')
-
-var connection = mysql.createConnection({
-  host: config.MY_HOST,
-  port: config.MY_PORT,
-  user: config.MY_USER,
-  password: config.MY_PASSWORD,
-  database: config.MY_DATABASE
-})
-
-connection.connect(function(err) {
-  if (err) throw err
-  console.log('Hello!')
-
-  connection.query('SELECT * FROM users', function(err, results) {
-    for (let i = 0; i < results.length; i++){
-      if (err) throw err
-      console.log(results[i])
-    }
-  })
-
-})
 
 
 
@@ -59,8 +39,11 @@ app.use(function(err, req, res, next) {
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
   // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+  //res.status(err.status || 500);
+  //res.sendfile('error');
 });
+// to parse form submits
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 module.exports = app;
