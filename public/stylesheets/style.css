@@ -5,6 +5,25 @@ body {
   height: 100vh;
 }
 
+#login{
+  padding: 0;
+
+}
+
+a {
+  margin-bottom: 0 !important;
+}
+
+.btn{
+  border: 1px solid black;
+
+}
+.logged{
+  color: white;
+  text-align: center;
+  margin-top: 5px;
+}
+
 #board {
   margin: 0 auto;
   display: block;
@@ -28,6 +47,7 @@ body {
 .clear{
   margin-top: 10px;
   text-align: center;
+
 }
 
 .form{
@@ -43,7 +63,7 @@ body {
   #board {
     width: 600px;
   }
-  button{
+  .btn{
     margin-bottom: 3px;
   }
 }
@@ -52,7 +72,7 @@ body {
   #board {
     width: 500px;
   }
-  button{
+  .btn{
     margin-bottom: 3px;
   }
 }
@@ -61,7 +81,8 @@ body {
   #board {
     width: 300px;
   }
-  button{
+  .btn{
     margin-bottom: 3px;
   }
+
 }

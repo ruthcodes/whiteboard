@@ -1,0 +1,62 @@
+extends layout
+
+block content
+  #main.container-fluid
+      .row
+        .boardContainer.col-md-12(onclick='saveCoords()')
+          .row
+            .col-md-12.buttonColours
+              button.colour.palette.btn(title='Red', data-value='red')
+                i.fa.fa-square.fa-2x
+              button.colour.palette.btn(title='Deep Pink', data-value='DeepPink')
+                i.fa.fa-square.fa-2x
+              button.colour.palette.btn(title='Salmon', data-value='salmon')
+                i.fa.fa-square.fa-2x
+              button.colour.palette.btn(title='Orange', data-value='orange')
+                i.fa.fa-square.fa-2x
+              button.colour.palette.btn(title='Yellow', data-value='yellow')
+                i.fa.fa-square.fa-2x
+              button.colour.palette.btn(title='Green Yellow', data-value='greenyellow')
+                i.fa.fa-square.fa-2x
+              button.colour.palette.btn(title='Green', data-value='green')
+                i.fa.fa-square.fa-2x
+              button.colour.palette.btn(title='Teal', data-value='teal')
+                i.fa.fa-square.fa-2x
+              button.colour.palette.btn(title='Blue', data-value='blue')
+                i.fa.fa-square.fa-2x
+              button.colour.palette.btn(title='Dark Blue', data-value='darkblue')
+                i.fa.fa-square.fa-2x
+              button.colour.palette.btn(title='Indigo', data-value='indigo')
+                i.fa.fa-square.fa-2x
+              button.colour.palette.btn(title='Purple', data-value='purple')
+                i.fa.fa-square.fa-2x
+              button.colour.palette.btn(title='Brown', data-value='brown')
+                i.fa.fa-square.fa-2x
+              button.colour.palette.btn(title='Black', data-value='black')
+                i.fa.fa-square.fa-2x
+          canvas#board(onmousemove='getCoords(event)', onmouseenter='enterBox()', onmouseleave='exitBox()')
+            | Please use a newer browser
+          .row
+            .col-md-12.clear
+              button#marker.btn.action(title='Marker', onclick="marker('marker')")
+                img(src='/images/icons/icons8-ball-point-pen-50.png')
+              button#pencil.btn.action(title='Pencil', onclick='pencil()')
+                img(src='/images/icons/icons8-pencil-50.png')
+              button#highlighter.btn.action(title='Highlighter', onclick='highlighter()')
+                img(src='/images/icons/icons8-marker-pen-50.png')
+              button#eraser.colour.btn.action(title='Eraser', data-value='white', onclick="marker('eraser')")
+                img(src='/images/icons/icons8-erase-filled-50.png')
+              button#save.btn.action(title='Save')
+                img(src='/images/icons/icons8-save-as-50.png')
+              button#open.btn.action(title='Open')
+                img(src='/images/icons/icons8-folder-50.png')
+              button#login.btn.action(title='Login')
+                a.btn.action(href='./login')
+                  img(src='/images/icons/icons8-customer-50.png')
+              button#undo.btn.action(title='Undo', onclick='undo()')
+                img(src='/images/icons/icons8-undo-filled-50.png')
+              button#trash.btn.action(title='Clear All', onclick='clickedClear()')
+                img(src='/images/icons/icons8-waste-50.png')
+            .col-md-12
+              p.logged
+                | You are not logged in. Click the person button above to login and save your drawings, or access previous ones

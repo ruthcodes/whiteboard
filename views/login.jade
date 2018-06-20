@@ -1,0 +1,13 @@
+extends layout
+
+block content
+  .formContainer.container-fluid
+    .row
+      .form.col-md-12
+        form(action='/login', method='post')
+          .form-group
+            input.form-control(autocomplete='off', autofocus='', name='username', placeholder='Username', type='text')
+          .form-group
+            input.form-control(name='password', placeholder='Password', type='password')
+          button.btn.btn-primary(type='submit') Log In
+          a(href='change') Change Password
