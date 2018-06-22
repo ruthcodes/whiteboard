@@ -4,6 +4,7 @@ var path = require('path');
 var config = require('../config');
 const bcrypt = require('bcryptjs');
 
+
 const notifier = require('node-notifier');
 
 var mysql = require('mysql')
@@ -21,10 +22,33 @@ return connection;
 }
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/', function(req, res) {
+  console.log("getting")
+
+  var username = req.session.username;
+  console.log(username);
+  //if (req.name == "open"){
+//    console.log("they opened")
+  //}
   //res.sendFile(path.join(__dirname + '/../views/whiteboard.html'))
-  res.render('whiteboard');
+  res.render('index');
 });
+
+
+// user saves drawing
+router.post('/', function(req, res){
+  // get name of drawing from form
+  console.log(req.body.drawingName);
+  console.log(req.body.lines);
+  //console.log(req.body.lines);
+  //check if name already in database
+  // if yes, UPDATE, else INSERT
+
+  // get drawlines function response and save as JSON
+  console.log("recieved the save")
+  //console.log(req.lines)
+  res.render('index');
+})
 
 // get login page
 router.get('/login', function(req, res, next){
@@ -76,9 +100,10 @@ router.post('/login', function(req, res, next) {
             } else {
               var sessData = req.session;
               sessData.username = req.body.username;
-              console.log(sessData.username);
 
-              return res.render('whiteboard', {user: sessData.username})
+              //console.log(sessData.username);
+
+              return res.render('index', {user: req.session.username})
               //return res.redirect('/')
             }
           });
@@ -126,7 +151,7 @@ router.post('/register', function(req, res, next) {
             bcrypt.hash(req.body.password, 8, function(err, hash) {
               var newUser = {username: req.body.username, password: hash}
               connection.query("INSERT INTO users SET ?", newUser, function(err, results){
-                return res.redirect('/')
+                return res.redirect('/login')
               })
             });
           } else {

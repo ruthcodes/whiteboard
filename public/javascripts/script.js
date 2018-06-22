@@ -1,4 +1,6 @@
 $(document).ready(function(){
+
+  //window.history.pushState("", "", '/');
   //set up canvas
   makeCanvas();
 
@@ -24,7 +26,25 @@ $(document).ready(function(){
       $(this).css('background-color', '#bdbdbd');
    });
 
-
+   $('#saving').on('click', function(event){
+     event.preventDefault();
+     data= {};
+     data.drawingName = $("#drawingName").val()
+     data.lines = savedLines
+     $.ajax({
+       url: '/',
+       type: 'POST',
+       contentType: "application/json",
+       data: JSON.stringify(data),
+       success: function(data) {
+         console.log('form submitted.');
+       },
+       error: function(data){
+         console.log("whoops, went wrong")
+       }
+     });
+     $('#saveModal').modal('toggle');
+   })
 
    // resize canvas based on browser adjustments
    function checkWidth(){
