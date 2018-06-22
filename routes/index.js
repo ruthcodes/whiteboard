@@ -21,17 +21,23 @@ var connection = mysql.createConnection({
 return connection;
 }
 
+var sess;
+
 /* GET home page. */
 router.get('/', function(req, res) {
-  console.log("getting")
 
-  var username = req.session.username;
-  console.log(username);
+  console.log(sess);
+
+  if (!sess){
+    res.render('index');
+  } else {
+    res.render('index', {user: sess.username});
+  }
   //if (req.name == "open"){
 //    console.log("they opened")
   //}
   //res.sendFile(path.join(__dirname + '/../views/whiteboard.html'))
-  res.render('index');
+
 });
 
 
@@ -98,13 +104,13 @@ router.post('/login', function(req, res, next) {
               return res.render('login');
               //return res.sendFile(path.join(__dirname + '/../views/login.html'))
             } else {
-              var sessData = req.session;
-              sessData.username = req.body.username;
+              sess = req.session;
+              sess.username = req.body.username;
 
               //console.log(sessData.username);
 
-              return res.render('index', {user: req.session.username})
-              //return res.redirect('/')
+              //return res.render('index', {user: sess.username})
+              return res.redirect('/')
             }
           });
       }
