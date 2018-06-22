@@ -31,7 +31,8 @@ router.get('/', function(req, res) {
   if (!sess){
     res.render('index');
   } else {
-    res.render('index', {user: sess.username});
+
+    res.render('index', {user: sess.username, userId: sess.userId});
   }
   //if (req.name == "open"){
 //    console.log("they opened")
@@ -44,15 +45,36 @@ router.get('/', function(req, res) {
 // user saves drawing
 router.post('/', function(req, res){
   // get name of drawing from form
-  console.log(req.body.drawingName);
-  console.log(req.body.lines);
-  //console.log(req.body.lines);
-  //check if name already in database
-  // if yes, UPDATE, else INSERT
+  if(!req.body.drawingName){
+    notifier.notify({
+      title: 'Could not save',
+      message: 'Must enter a drawing name'
+    })
+    res.render('index');
+  } else {
 
-  // get drawlines function response and save as JSON
-  console.log("recieved the save")
-  //console.log(req.lines)
+    var connection = db();
+    //check if drawing name already in database
+    connection.query("SELECT * FROM whiteboards WHERE userid= ? AND whiteboardname = ?", [sess.userId,req.body.drawingName],
+      function(err, results){
+        // if name doesn't exist on database
+        if(!results.length){
+          // INSERT into whiteboard
+          var newDraw = {userid: sess.userId, whiteboardname: req.body.drawingName, lines: req.body.lines};
+          connection.query("INSERT INTO whiteboards SET ?", newDraw, function(err, res){
+            console.log("Inserted new drawing")
+          })
+        } else {
+          // UPDATE existing drawing
+          var newDraw = {lines: req.body.lines, whiteboardname: req.body.drawingName}
+          connection.query("UPDATE whiteboards SET lines = ? WHERE whiteboardname = ?", [newDraw], function(err, res){
+            console.log("Overwrote old drawing")
+          })
+        }
+      })
+
+  }
+
   res.render('index');
 })
 
@@ -106,6 +128,7 @@ router.post('/login', function(req, res, next) {
             } else {
               sess = req.session;
               sess.username = req.body.username;
+              sess.userId = results[0]['userid'];
 
               //console.log(sessData.username);
 
