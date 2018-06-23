@@ -25,7 +25,7 @@ $(document).ready(function(){
       $('.palette').css('background-color', 'white');
       $(this).css('background-color', '#bdbdbd');
    });
-
+   // when user saves, post
    $('#saving').on('click', function(event){
      event.preventDefault();
      data= {};
@@ -45,6 +45,39 @@ $(document).ready(function(){
      });
      $('#saveModal').modal('toggle');
    })
+   // when user clicks open,
+   $('#open').on('click', function(event){
+     console.log("clicked")
+     event.preventDefault();
+     $.ajax({
+       url: '/open',
+       type: 'GET',
+       contentType: "application/json",
+       success: function(data){
+
+         //console.log(data.rows)
+         var rows = data.rows
+         if (!data.rows.length){
+           $('#drawings').html("<p>No saved drawings</p>");
+         } else {
+           var string = "<ul>"
+           for (let i = 0; i < data.rows.length; i++){
+             string += "<li><button> " + data.rows[i].whiteboardname + '</button></li>';
+           }
+           string += "</ul>"
+           $('#drawings').html(string);
+         }
+
+       }
+     })
+     $('#openModal').modal('toggle');
+   })
+
+   $('#deleting').on('click', function(event){
+     clickedClear();
+     $('#deleteModal').modal('toggle');
+   })
+
 
    // resize canvas based on browser adjustments
    function checkWidth(){

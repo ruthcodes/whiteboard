@@ -14,7 +14,7 @@ block content
             form#save
               .form-group
                 label(for='drawingName') Drawing Name:
-                input#drawingName.form-control(type='text', name='drawingName', placeholder='Name your drawing' value='NameOfCurrentDrawing')
+                input#drawingName.form-control(type='text', name='drawingName', placeholder='Name your drawing' value='NameOfCurrentDrawing' maxlength='15')
                 small#drawingHelp.form-text.text-muted To save as a new file, choose a new unique name. Using a previous name will overwrite your old drawing.
                 input#lines.form-control(type='hidden', name='lines', value='')
                 br
@@ -22,6 +22,38 @@ block content
           div(class="modal-footer")
             button(type="button" class="btn btn-default" data-dismiss="modal") Close
             button(type="button" id="saving" class="btn btn-primary") Save
+
+    #openModal(class="modal fade")
+      div(class="modal-dialog")
+        div(class="modal-content")
+          div(class="modal-header")
+            h4(class="modal-title") Open
+            button(type="button" class="close" data-dismiss="modal" aria-hidden="true") &times;
+
+          div(class="modal-body bodyOpen")
+
+              span#drawings
+
+          div(class="modal-footer")
+            button(type="button" class="btn btn-default" data-dismiss="modal") Close
+            button(type="button" class="btn btn-primary") Open
+
+
+
+    #deleteModal(class="modal fade")
+      div(class="modal-dialog")
+        div(class="modal-content")
+          div(class="modal-header")
+            h4(class="modal-title") Delete
+            button(type="button" class="close" data-dismiss="modal" aria-hidden="true") &times;
+
+          div(class="modal-body bodyDelete")
+
+              p Delete Drawing?
+
+          div(class="modal-footer")
+            button(type="button" class="btn btn-default" data-dismiss="modal") Cancel
+            button(type="button" id="deleting" class="btn btn-danger") Delete
   else
     #saveModal(class="modal fade")
       div(class="modal-dialog")
@@ -31,24 +63,38 @@ block content
             button(type="button" class="close" data-dismiss="modal" aria-hidden="true") &times;
 
           div(class="modal-body")
-            You must be logged in to save
+            p Must be logged in to save
 
           div(class="modal-footer")
             button(type="button" class="btn btn-default" data-dismiss="modal") Close
 
-  #openModal(class="modal fade")
-    div(class="modal-dialog")
-      div(class="modal-content")
-        div(class="modal-header")
-          h4(class="modal-title") Open #{user}
-          button(type="button" class="close" data-dismiss="modal" aria-hidden="true") &times;
+    #openModal(class="modal fade")
+      div(class="modal-dialog")
+        div(class="modal-content")
+          div(class="modal-header")
+            h4(class="modal-title") Please sign in
+            button(type="button" class="close" data-dismiss="modal" aria-hidden="true") &times;
 
-        div(class="modal-body")
-          Open list!
+          div(class="modal-body")
+              p Must be logged in to open previous drawings
 
-        div(class="modal-footer")
-          button(type="button" class="btn btn-default" data-dismiss="modal") Close
-          button(type="button" method="GET" name="open" class="btn btn-primary") Open
+          div(class="modal-footer")
+            button(type="button" class="btn btn-default" data-dismiss="modal") Close
+
+    #deleteModal(class="modal fade")
+      div(class="modal-dialog")
+        div(class="modal-content")
+          div(class="modal-header")
+            h4(class="modal-title") Delete
+            button(type="button" class="close" data-dismiss="modal" aria-hidden="true") &times;
+
+          div(class="modal-body bodyDelete")
+
+              p Delete drawing?
+
+          div(class="modal-footer")
+            button(type="button" class="btn btn-default" data-dismiss="modal") Cancel
+            button(type="button" id="deleting" class="btn btn-danger") Delete
 
   #main.container-fluid
       .row
@@ -97,14 +143,14 @@ block content
                 img(src='/images/icons/icons8-erase-filled-50.png')
               button#save.btn.action(title='Save' data-toggle="modal" href="#saveModal")
                 img(src='/images/icons/icons8-save-as-50.png')
-              button#open.btn.action(title='Open' data-toggle="modal" href="#openModal")
+              button#open.btn.action(title='Open' name="open" data-toggle="modal" href="#openModal")
                 img(src='/images/icons/icons8-folder-50.png')
               button#login.btn.action(title='Login')
                 a.btn.action(href='./login')
                   img(src='/images/icons/icons8-customer-50.png')
               button#undo.btn.action(title='Undo', onclick='undo()')
                 img(src='/images/icons/icons8-undo-filled-50.png')
-              button#trash.btn.action(title='Clear All', onclick='clickedClear()')
+              button#trash.btn.action(title='Clear All' data-toggle="modal" href="#deleteModal")
                 img(src='/images/icons/icons8-waste-50.png')
             .col-md-12
               if !user

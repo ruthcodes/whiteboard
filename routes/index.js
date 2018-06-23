@@ -23,23 +23,26 @@ return connection;
 
 var sess;
 
+router.get('/open', function(req,res){
+  var connection = db();
+  connection.query("SELECT whiteboardname FROM whiteboards WHERE userId = ?", sess.userId, function(err, results){
+    res.send({user: sess.username, userId: sess.userId, rows: results});
+  })
+})
+
 /* GET home page. */
 router.get('/', function(req, res) {
-
-  console.log(sess);
 
   if (!sess){
     res.render('index');
   } else {
-
-    res.render('index', {user: sess.username, userId: sess.userId});
+    //populate the open modal with names of all drawings
+    var connection = db();
+    connection.query("SELECT whiteboardname FROM whiteboards WHERE userId = ?", sess.userId, function(err, results){
+      res.render('index', {user: sess.username, userId: sess.userId});
+    })
   }
-  //if (req.name == "open"){
-//    console.log("they opened")
-  //}
-  //res.sendFile(path.join(__dirname + '/../views/whiteboard.html'))
-
-});
+})
 
 
 // user saves drawing
@@ -54,18 +57,16 @@ router.post('/', function(req, res){
   } else {
 
     var connection = db();
-    //check if drawing name already in database
     connection.query("SELECT * FROM whiteboards WHERE userid= ? AND whiteboardname = ?", [sess.userId,req.body.drawingName],
       function(err, results){
-        // if name doesn't exist on database
         if(!results.length){
-          // INSERT into whiteboard
-          var newDraw = {userid: sess.userId, whiteboardname: req.body.drawingName, lines: req.body.lines};
+          // INSERT new drawing into whiteboard database
+          var newDraw = {userid: sess.userId, whiteboardname: req.body.drawingName, lines: JSON.stringify(req.body.lines)};
           connection.query("INSERT INTO whiteboards SET ?", newDraw, function(err, res){
             console.log("Inserted new drawing")
           })
         } else {
-          // UPDATE existing drawing
+          // UPDATE -overwrite old drawing
           var newDraw = {lines: req.body.lines, whiteboardname: req.body.drawingName}
           connection.query("UPDATE whiteboards SET lines = ? WHERE whiteboardname = ?", [newDraw], function(err, res){
             console.log("Overwrote old drawing")
@@ -74,7 +75,6 @@ router.post('/', function(req, res){
       })
 
   }
-
   res.render('index');
 })
 
