@@ -46,6 +46,12 @@ router.get('/', function(req, res) {
   }
 })
 
+router.post('/delete', function(req,res){
+  var connection = db();
+  connection.query("DELETE FROM whiteboards WHERE whiteboardname = ?", req.body.drawingName, function(err,results){
+    console.log(req.body.drawingName);
+  })
+})
 
 // user saves drawing
 router.post('/', function(req, res){
@@ -64,7 +70,7 @@ router.post('/', function(req, res){
         if(!results.length){
           // INSERT new drawing into whiteboard database
           var newDraw = {userid: sess.userId, whiteboardname: req.body.drawingName, whiteboardlines: req.body.whiteboardlines};
-          console.log(newDraw);
+
           connection.query("INSERT INTO whiteboards SET ?", newDraw, function(err, res){
             console.log("Inserted new drawing")
           })
@@ -73,7 +79,7 @@ router.post('/', function(req, res){
           var newDraw = [req.body.whiteboardlines, req.body.drawingName];
           connection.query("UPDATE whiteboards SET whiteboardlines = ? WHERE whiteboardname = ?", newDraw, function(err, res){
             console.log("updated")
-            console.log(newDraw)
+
           })
         }
       })
@@ -84,8 +90,17 @@ router.post('/', function(req, res){
 
 // get login page
 router.get('/login', function(req, res, next){
+  console.log("getting login")
+  if(sess){
+    sess = null;
+    req.session.destroy();
+    notifier.notify({
+      title: 'Status',
+      message: 'Logged out!'
+    })
+  }
   res.render('login');
-  //res.sendFile(path.join(__dirname + '/../views/login.html'));
+
 });
 
 //submit login
@@ -98,14 +113,14 @@ router.post('/login', function(req, res, next) {
       message: 'Must enter a username'
     })
     return res.render('login');
-    //return res.sendFile(path.join(__dirname + '/../views/login.html'))
+
   } else if (!req.body.password){
     notifier.notify({
       title: 'Error',
       message: 'Must enter a password'
     })
     return res.render('login');
-    //return res.sendFile(path.join(__dirname + '/../views/login.html'))
+
   }
   // if username exists
   var connection = db();
@@ -118,7 +133,7 @@ router.post('/login', function(req, res, next) {
           message: 'No account exists under that username'
         })
         return res.render('login');
-        //return res.sendFile(path.join(__dirname + '/../views/login.html'))
+
       } else {
         // found the username, check that the password matches
           bcrypt.compare(req.body.password, results[0]['password'], function(err, result) {
@@ -128,15 +143,12 @@ router.post('/login', function(req, res, next) {
                 message: 'Wrong password'
               })
               return res.render('login');
-              //return res.sendFile(path.join(__dirname + '/../views/login.html'))
+
             } else {
               sess = req.session;
               sess.username = req.body.username;
               sess.userId = results[0]['userid'];
 
-              //console.log(sessData.username);
-
-              //return res.render('index', {user: sess.username})
               return res.redirect('/')
             }
           });
@@ -158,22 +170,26 @@ router.post('/register', function(req, res, next) {
       title: 'Error',
       message: 'Must Provide a username'
     });
+    return res.render('register')
   } else if (!req.body.password){
     notifier.notify({
       title: 'Error',
       message: 'Must provide a password'
     });
+    return res.render('register')
   } else if (!req.body.confirm){
     notifier.notify({
       title: 'Error',
       message: 'Must provide a password confirmation'
     });
+    return res.render('register')
   //pasword and confirmation don't match
   } else if (req.body.password != req.body.confirm){
     notifier.notify({
       title: 'Error',
       message: 'Password and confirmation do not match'
     });
+    return res.render('register')
   } else {
     var connection = db();
     // check if username is taken
@@ -192,6 +208,7 @@ router.post('/register', function(req, res, next) {
               title: 'Error',
               message: 'Username is already taken'
             });
+            return res.render('register')
           }
       })
   }

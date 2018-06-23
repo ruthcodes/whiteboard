@@ -77,22 +77,51 @@ $(document).ready(function(){
    //when user clicks on a drawing in open modal, redraw that drawing
    //TO DO: ALSO UPDATE SESSION CURRENT DRAWING?
    $(document).on("click", '.savedDrawings', function(event){
-     event.preventDefault()
+     event.preventDefault();
+     toDelete = $(this).text();
      savedLines = $(this).data('value');
      redraw();
+     //reset pen after drawing
+     colour = "black";
+     marker("pen");
+     //close modal after loading image
+     $('#openModal').modal('toggle');
+     console.log("modeal should be closed now?")
    })
 
    // when user confirms delete, clear the board
    // TO DO: ALSO DELETE FROM DATABASE IF LOGGED IN
    $('#deleting').on('click', function(event){
-     clickedClear();
+     if (toDelete){
+       data={}
+       data.drawingName = toDelete;
+       $.ajax({
+         url: '/delete',
+         type: 'POST',
+         contentType: "application/json",
+         data: JSON.stringify(data),
+         success: function(data) {
+           console.log('form submitted.');
+
+         },
+         error: function(data){
+           console.log("whoops, went wrong")
+         }
+       });
+       toDelete = null;
+     }
+
+     clickedClear("trash");
      $('#deleteModal').modal('toggle');
+     //AJAX post, DELETE
    })
 
 
    // resize canvas based on browser adjustments
    function checkWidth(){
-     if ($( document ).width() <= 600){
+     if ($( document ).width() <= 400){
+       canvas.width = 200;
+     } else if ($( document ).width() <= 600){
        canvas.width = 300;
      } else if ($( document ).width() <= 800){
        canvas.width = 500;
@@ -165,6 +194,7 @@ var opacity = 1.0;
 var c;
 var w;
 
+var toDelete;
 // true when inside canvas
 var canDraw = false;
 var mouseDown = false;
@@ -287,13 +317,16 @@ function undo(){
   redraw();
 }
 
-function clickedClear(){
+function clickedClear(trash){
   //remove saved lines only if clear all clicked
   // otherwise clearing before redrawing on undo will break
-  $('#trash').css('background-color', '#bdbdbd');
-  setTimeout(function(){
-    $('#trash').css('background-color', 'white');
-  }, 300);
+  if (trash == "trash"){
+    $('#trash').css('background-color', '#bdbdbd');
+    setTimeout(function(){
+      $('#trash').css('background-color', 'white');
+    }, 300);
+  }
+
   savedLines = [];
   clearAll();
 }

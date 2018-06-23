@@ -14,7 +14,7 @@ block content
             form#save
               .form-group
                 label(for='drawingName') Drawing Name:
-                input#drawingName.form-control(type='text', name='drawingName', placeholder='Name your drawing' value='NameOfCurrentDrawing' maxlength='15')
+                input#drawingName.form-control(type='text', name='drawingName', placeholder='Name your drawing' value='MyDrawing' maxlength='15')
                 small#drawingHelp.form-text.text-muted To save as a new file, choose a new unique name. Using a previous name will overwrite your old drawing.
                 input#lines.form-control(type='hidden', name='lines', value='')
                 br
@@ -50,6 +50,7 @@ block content
           div(class="modal-body bodyDelete")
 
               p Delete Drawing?
+              p.bold Warning: If you have saved this drawing to your account, it will also be deleted from there.
 
           div(class="modal-footer")
             button(type="button" class="btn btn-default" data-dismiss="modal") Cancel
@@ -145,15 +146,25 @@ block content
                 img(src='/images/icons/icons8-save-as-50.png')
               button#open.btn.action(title='Open' name="open" data-toggle="modal" href="#openModal")
                 img(src='/images/icons/icons8-folder-50.png')
-              button#login.btn.action(title='Login')
-                a.btn.action(href='./login')
-                  img(src='/images/icons/icons8-customer-50.png')
+              if user
+                button#login.btn.action(title='Logout')
+                  a.btn.action(href='./login')
+                    img(src='/images/icons/icons8-customer-50.png')
+              else
+                button#login.btn.action(title='Login')
+                  a.btn.action(href='./login')
+                    img(src='/images/icons/icons8-customer-50.png')
+              button#new.btn.action(title='New', onclick='clickedClear()')
+                img(src='/images/icons/icons8-new-file-50.png')
               button#undo.btn.action(title='Undo', onclick='undo()')
                 img(src='/images/icons/icons8-undo-filled-50.png')
-              button#trash.btn.action(title='Clear All' data-toggle="modal" href="#deleteModal")
+              button#trash.btn.action(title='Delete' data-toggle="modal" href="#deleteModal")
                 img(src='/images/icons/icons8-waste-50.png')
             .col-md-12
               if !user
-                p.logged You are not logged in. Click the person button above to login and save your drawings, or access previous ones
+                p.logged You are not logged in. Click the person button to login and save your drawings, or access previous ones
               else
-                p.logged Logged in as #{user}
+                p.logged
+                  |Logged in as
+                  span.userDeco #{user}
+                  |. Click the person button to logout

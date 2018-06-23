@@ -1,8 +1,16 @@
+html{
+  min-height: 100%;
+
+}
+
 body {
   background: #0f2027;
   background: -webkit-linear-gradient(to right, #0f2027, #203a43, #2c5364);
   background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
-  height: 100vh;
+  min-height: 100%;
+  background-repeat: no-repeat;
+  background-size: cover;
+
 }
 
 #login{
@@ -10,8 +18,12 @@ body {
 
 }
 
-a {
+button a {
   margin-bottom: 0 !important;
+}
+
+.userDeco{
+  color: yellow;
 }
 
 .btn{
@@ -48,6 +60,10 @@ li button{
   width: 250px;
 }
 
+.bold{
+  font-weight: bold;
+}
+
 .bodyOpen{
   padding-right: 40px;
 }
@@ -71,9 +87,9 @@ li button{
   text-align: center;
 }
 
-.formContainer {
-  padding-left: 200px;
-  padding-right: 200px;
+.inner{
+  width: 40%;
+  margin: 0 auto;
 }
 
 @media (max-width:900px){
@@ -100,6 +116,19 @@ li button{
   }
   .btn{
     margin-bottom: 3px;
+  }
+
+
+}
+@media (max-width:400px){
+  #board {
+    width: 200px;
+  }
+  .btn{
+    margin-bottom: 3px;
+  }
+  .inner{
+    width: 70%;
   }
 
 }
