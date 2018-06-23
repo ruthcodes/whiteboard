@@ -155,6 +155,68 @@ router.post('/login', function(req, res, next) {
       }
     })
 });
+// get change password page
+router.get('/change', function(req, res, next) {
+  return res.render('change');
+
+});
+
+// get change password page
+router.post('/change', function(req, res, next) {
+  //check they filled in all fields
+  if (!req.body.username || !req.body.oldPassword || !req.body.newPassword || !req.body.confirmation){
+    notifier.notify({
+      title: 'Error',
+      message: 'Please fill in all fields'
+    });
+    return res.render('change');
+  }
+  //check new password and confirmation are the same
+  if (req.body.newPassword != req.body.confirmation){
+    notifier.notify({
+      title: 'Error',
+      message: 'New password and confirmation must match'
+    });
+    return res.render('change');
+  }
+  // check username exists
+  var connection = db();
+  connection.query("SELECT * FROM users WHERE username = ?", req.body.username, function(err,result){
+    if(!result.length){
+      notifier.notify({
+        title: 'Error',
+        message: 'Cannot find that username in our system'
+      });
+      return res.render('change');
+    }
+
+    //check old password matches Username
+      bcrypt.compare(req.body.oldPassword, result[0]['password'], function(err, result) {
+        if(!result){
+          notifier.notify({
+            title: 'Error',
+            message: 'Wrong password'
+          })
+          return res.render('change');
+
+        } else {
+          //change the password to newPassword
+          // encrypt password, UPDATE password field
+          bcrypt.hash(req.body.newPassword, 8, function(err, hash) {
+            var updateUser = [hash, req.body.username]
+            connection.query("UPDATE users SET password = ? WHERE username= ?", updateUser, function(err, results){
+              notifier.notify({
+                title: 'Success!',
+                message: 'Password changed'
+              })
+              return res.redirect('login')
+            })
+          });
+        }
+      });
+  })
+
+});
 
 // get register page
 router.get('/register', function(req, res, next) {
