@@ -25,12 +25,13 @@ $(document).ready(function(){
       $('.palette').css('background-color', 'white');
       $(this).css('background-color', '#bdbdbd');
    });
+
    // when user saves, post
    $('#saving').on('click', function(event){
      event.preventDefault();
      data= {};
      data.drawingName = $("#drawingName").val()
-     data.lines = savedLines
+     data.whiteboardlines = JSON.stringify(savedLines);
      $.ajax({
        url: '/',
        type: 'POST',
@@ -38,41 +39,51 @@ $(document).ready(function(){
        data: JSON.stringify(data),
        success: function(data) {
          console.log('form submitted.');
+
        },
        error: function(data){
          console.log("whoops, went wrong")
        }
      });
+     //close modal when done
      $('#saveModal').modal('toggle');
    })
    // when user clicks open,
    $('#open').on('click', function(event){
-     console.log("clicked")
+
      event.preventDefault();
      $.ajax({
        url: '/open',
        type: 'GET',
        contentType: "application/json",
        success: function(data){
-
-         //console.log(data.rows)
-         var rows = data.rows
          if (!data.rows.length){
            $('#drawings').html("<p>No saved drawings</p>");
          } else {
+           //dynamically create buttons based on drawings returned from db
            var string = "<ul>"
            for (let i = 0; i < data.rows.length; i++){
-             string += "<li><button> " + data.rows[i].whiteboardname + '</button></li>';
+             var myObj = data.rows[i].whiteboardlines
+             string += "<li><button class='savedDrawings' data-value='"+ myObj + "'>"+ data.rows[i].whiteboardname + '</button></li>';
            }
            string += "</ul>"
            $('#drawings').html(string);
          }
-
        }
      })
      $('#openModal').modal('toggle');
    })
 
+   //when user clicks on a drawing in open modal, redraw that drawing
+   //TO DO: ALSO UPDATE SESSION CURRENT DRAWING?
+   $(document).on("click", '.savedDrawings', function(event){
+     event.preventDefault()
+     savedLines = $(this).data('value');
+     redraw();
+   })
+
+   // when user confirms delete, clear the board
+   // TO DO: ALSO DELETE FROM DATABASE IF LOGGED IN
    $('#deleting').on('click', function(event){
      clickedClear();
      $('#deleteModal').modal('toggle');

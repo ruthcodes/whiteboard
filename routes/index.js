@@ -5,6 +5,7 @@ var config = require('../config');
 const bcrypt = require('bcryptjs');
 
 
+
 const notifier = require('node-notifier');
 
 var mysql = require('mysql')
@@ -25,7 +26,8 @@ var sess;
 
 router.get('/open', function(req,res){
   var connection = db();
-  connection.query("SELECT whiteboardname FROM whiteboards WHERE userId = ?", sess.userId, function(err, results){
+  connection.query("SELECT * FROM whiteboards WHERE userId = ?", sess.userId, function(err, results){
+
     res.send({user: sess.username, userId: sess.userId, rows: results});
   })
 })
@@ -36,7 +38,7 @@ router.get('/', function(req, res) {
   if (!sess){
     res.render('index');
   } else {
-    //populate the open modal with names of all drawings
+    //set the user details for homepage based on logged in user
     var connection = db();
     connection.query("SELECT whiteboardname FROM whiteboards WHERE userId = ?", sess.userId, function(err, results){
       res.render('index', {user: sess.username, userId: sess.userId});
@@ -61,15 +63,17 @@ router.post('/', function(req, res){
       function(err, results){
         if(!results.length){
           // INSERT new drawing into whiteboard database
-          var newDraw = {userid: sess.userId, whiteboardname: req.body.drawingName, lines: JSON.stringify(req.body.lines)};
+          var newDraw = {userid: sess.userId, whiteboardname: req.body.drawingName, whiteboardlines: req.body.whiteboardlines};
+          console.log(newDraw);
           connection.query("INSERT INTO whiteboards SET ?", newDraw, function(err, res){
             console.log("Inserted new drawing")
           })
         } else {
           // UPDATE -overwrite old drawing
-          var newDraw = {lines: req.body.lines, whiteboardname: req.body.drawingName}
-          connection.query("UPDATE whiteboards SET lines = ? WHERE whiteboardname = ?", [newDraw], function(err, res){
-            console.log("Overwrote old drawing")
+          var newDraw = [req.body.whiteboardlines, req.body.drawingName];
+          connection.query("UPDATE whiteboards SET whiteboardlines = ? WHERE whiteboardname = ?", newDraw, function(err, res){
+            console.log("updated")
+            console.log(newDraw)
           })
         }
       })
