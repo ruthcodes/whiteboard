@@ -74,6 +74,11 @@ $(document).ready(function(){
      $('#openModal').modal('toggle');
    })
 
+   $('#newFile').on('click', function(event){
+     event.preventDefault();
+     clickedClear();
+     $('#newModal').modal('toggle');
+   })
    //when user clicks on a drawing in open modal, redraw that drawing
    //TO DO: ALSO UPDATE SESSION CURRENT DRAWING?
    $(document).on("click", '.savedDrawings', function(event){

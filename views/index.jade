@@ -97,6 +97,22 @@ block content
             button(type="button" class="btn btn-default" data-dismiss="modal") Cancel
             button(type="button" id="deleting" class="btn btn-danger") Delete
 
+
+  #newModal(class="modal fade")
+    div(class="modal-dialog")
+      div(class="modal-content")
+        div(class="modal-header")
+          h4(class="modal-title") New
+          button(type="button" class="close" data-dismiss="modal" aria-hidden="true") &times;
+
+        div(class="modal-body bodyNew")
+
+            p Start new drawing? This will erase anything not saved.
+
+        div(class="modal-footer")
+          button(type="button" class="btn btn-default" data-dismiss="modal") Cancel
+          button(type="button" id="newFile" class="btn btn-primary") OK
+
   #main.container-fluid
       .row
         .boardContainer.col-md-12(onclick='saveCoords()')
@@ -154,7 +170,7 @@ block content
                 button#login.btn.action(title='Login')
                   a.btn.action(href='./login')
                     img(src='/images/icons/icons8-customer-50.png')
-              button#new.btn.action(title='New', onclick='clickedClear()')
+              button#new.btn.action(title='New', name="newFile" data-toggle="modal" href="#newModal")
                 img(src='/images/icons/icons8-new-file-50.png')
               button#undo.btn.action(title='Undo', onclick='undo()')
                 img(src='/images/icons/icons8-undo-filled-50.png')
