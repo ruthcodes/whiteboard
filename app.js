@@ -58,6 +58,8 @@ app.use(function(err, req, res, next) {
   //res.sendFile('error');
 });
 */
-
-
+const port = process.env.PORT || 8080;
+app.listen(port, () => {
+  console.log('Express server listening on port', port)
+});
 module.exports = app;
