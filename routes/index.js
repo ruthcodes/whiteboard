@@ -12,11 +12,11 @@ var mysql = require('mysql')
 
 function db(){
 var connection = mysql.createConnection({
-  host: MY_HOST,
-  port: MY_PORT,
-  user: MY_USER,
-  password: MY_PASSWORD,
-  database: MY_DATABASE,
+  host: process.env.MY_HOST,
+  port: process.env.MY_PORT,
+  user: process.env.MY_USER,
+  password: process.env.MY_PASSWORD,
+  database: process.env.MY_DATABASE,
   multipleStatements:true
 })
 return connection;
@@ -30,6 +30,7 @@ router.get('/open', function(req,res){
 
     res.send({user: sess.username, userId: sess.userId, rows: results});
   })
+  connection.end();
 })
 
 /* GET home page. */
@@ -43,6 +44,7 @@ router.get('/', function(req, res) {
     connection.query("SELECT whiteboardname FROM whiteboards WHERE userId = ?", sess.userId, function(err, results){
       res.render('index', {user: sess.username, userId: sess.userId});
     })
+    connection.end();
   }
 })
 
@@ -51,6 +53,7 @@ router.post('/delete', function(req,res){
   connection.query("DELETE FROM whiteboards WHERE whiteboardname = ?", req.body.drawingName, function(err,results){
     console.log(req.body.drawingName);
   })
+  connection.end();
 })
 
 // user saves drawing
@@ -83,6 +86,7 @@ router.post('/', function(req, res){
           })
         }
       })
+      connection.end();
 
   }
   res.render('index');
@@ -90,6 +94,9 @@ router.post('/', function(req, res){
 
 // get login page
 router.get('/login', function(req, res, next){
+  //if(message){
+
+  //}
   console.log("getting login")
   if(sess){
     sess = null;
@@ -99,7 +106,7 @@ router.get('/login', function(req, res, next){
       message: 'Logged out!'
     })
   }
-  res.render('login');
+  res.render('login', {message: "Logged out!"});
 
 });
 
@@ -126,8 +133,10 @@ router.post('/login', function(req, res, next) {
   var connection = db();
   connection.query("SELECT * FROM users WHERE username = ?", req.body.username,
     function(err, results){
+      console.l0g(results);
       // if you can't find the username
       if (!results.length){
+        console.log("user doesnt exist in DB")
         notifier.notify({
           title: 'Error',
           message: 'No account exists under that username'
@@ -154,6 +163,7 @@ router.post('/login', function(req, res, next) {
           });
       }
     })
+    connection.end();
 });
 // get change password page
 router.get('/change', function(req, res, next) {
@@ -211,6 +221,7 @@ router.post('/change', function(req, res, next) {
               })
               return res.redirect('login')
             })
+            connection.end();
           });
         }
       });
@@ -257,11 +268,12 @@ router.post('/register', function(req, res, next) {
     // check if username is taken
       connection.query("SELECT * FROM users WHERE username = ?", req.body.username,
         function(err, results) {
+          console.log("i'm in the connection")
           if (!results.length){
             // encrypt password
             bcrypt.hash(req.body.password, 8, function(err, hash) {
               var newUser = {username: req.body.username, password: hash}
-              connection.query("INSERT INTO users SET ?", newUser, function(err, results){
+              connection.query("INSERT INTO MY_DATABASE.users SET ?", newUser, function(err, results){
                 return res.redirect('/login')
               })
             });
@@ -273,6 +285,7 @@ router.post('/register', function(req, res, next) {
             return res.render('register')
           }
       })
+      connection.end();
   }
 });
 
