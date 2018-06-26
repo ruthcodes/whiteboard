@@ -70,7 +70,7 @@ router.post('/', function(req, res){
     var connection = db();
     connection.query("SELECT * FROM whiteboards WHERE userid= ? AND whiteboardname = ?", [sess.userId,req.body.drawingName],
       function(err, results){
-        if(!results.length){
+        if(results.length <= 0){
           // INSERT new drawing into whiteboard database
           var newDraw = {userid: sess.userId, whiteboardname: req.body.drawingName, whiteboardlines: req.body.whiteboardlines};
 
@@ -135,7 +135,7 @@ router.post('/login', function(req, res, next) {
     function(err, results){
 
       // if you can't find the username
-      if (results && !results.length){
+      if (!results.length){
         console.log("user doesnt exist in DB")
         notifier.notify({
           title: 'Error',
