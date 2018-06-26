@@ -133,9 +133,9 @@ router.post('/login', function(req, res, next) {
   var connection = db();
   connection.query("SELECT * FROM users WHERE username = ?", req.body.username,
     function(err, results){
-      
+
       // if you can't find the username
-      if (!results.length){
+      if (results && !results.length){
         console.log("user doesnt exist in DB")
         notifier.notify({
           title: 'Error',
