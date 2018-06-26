@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var path = require('path');
-//var config = require('../config');
+var config = require('../config');
 const bcrypt = require('bcryptjs');
 
 
@@ -12,11 +12,11 @@ var mysql = require('mysql')
 
 function db(){
 var connection = mysql.createConnection({
-  host: process.env.MY_HOST,
-  port: process.env.MY_PORT,
-  user: process.env.MY_USER,
-  password: process.env.MY_PASSWORD,
-  database: process.env.MY_DATABASE,
+  host: config.MY_HOST,
+  port: config.MY_PORT,
+  user: config.MY_USER,
+  password: config.MY_PASSWORD,
+  database: config.MY_DATABASE,
   multipleStatements:true
 })
 return connection;
