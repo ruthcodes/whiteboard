@@ -274,7 +274,7 @@ router.post('/register', function(req, res, next) {
             // encrypt password
             bcrypt.hash(req.body.password, 8, function(err, hash) {
               var newUser = {username: req.body.username, password: hash}
-              connection.query("INSERT INTO MY_DATABASE.users SET ?", newUser, function(err, results){
+              connection.query("INSERT INTO users SET ?", newUser, function(err, results){
                 return res.redirect('/login')
               })
             });
@@ -286,7 +286,6 @@ router.post('/register', function(req, res, next) {
             return res.render('register', {messageHead: "Error", message:"Username is already taken"})
           }
       })
-      connection.end();
   }
 });
 
