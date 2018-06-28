@@ -1,4 +1,6 @@
 $(document).ready(function(){
+  // Show message if there is one (template will have a message modal if there is a message)
+  $('#messageModal').modal('show');
 
   //window.history.pushState("", "", '/');
   //set up canvas
@@ -29,25 +31,33 @@ $(document).ready(function(){
    // when user saves, post
    $('#saving').on('click', function(event){
      event.preventDefault();
+
      data= {};
      data.drawingName = $("#drawingName").val()
      data.whiteboardlines = JSON.stringify(savedLines);
-     $.ajax({
-       url: '/',
-       type: 'POST',
-       contentType: "application/json",
-       data: JSON.stringify(data),
-       success: function(data) {
-         console.log('form submitted.');
+     if(!data.drawingName){
+       $('#drawingName').addClass('animated shake');
+       setTimeout(function(){ $("#drawingName").removeClass('animated shake'); }, 1000);
+     } else {
+       $.ajax({
+         url: '/save',
+         type: 'POST',
+         contentType: "application/json",
+         data: JSON.stringify(data),
+         success: function(data) {
+           console.log('form submitted.');
 
-       },
-       error: function(data){
-         console.log("whoops, went wrong")
-       }
-     });
-     //close modal when done
-     $('#saveModal').modal('toggle');
+         },
+         error: function(data){
+           console.log("whoops, went wrong")
+         }
+       });
+       //close modal when done
+       $('#saveModal').modal('toggle');
+     }
+
    })
+
    // when user clicks open,
    $('#open').on('click', function(event){
 

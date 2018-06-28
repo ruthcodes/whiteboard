@@ -1,7 +1,7 @@
 extends layout
 
 block content
-  // modal
+  // modals
   if user
     #saveModal(class="modal fade")
       div(class="modal-dialog")
@@ -13,7 +13,7 @@ block content
           div(class="modal-body")
             form#save
               .form-group
-                label(for='drawingName') Drawing Name:
+                label(for='drawingName') Drawing Name* :
                 input#drawingName.form-control(type='text', name='drawingName', placeholder='Name your drawing' value='MyDrawing' maxlength='15')
                 small#drawingHelp.form-text.text-muted To save as a new file, choose a new unique name. Using a previous name will overwrite your old drawing.
                 input#lines.form-control(type='hidden', name='lines', value='')

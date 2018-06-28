@@ -2,13 +2,13 @@ extends layout
 
 block content
   .formContainer.container-fluid
-      .row
-        .form.col-md-12.inner
-          form(action='/login', method='post')
-            .form-group
-              input.form-control(autocomplete='off', autofocus='', name='username', size=15, placeholder='Username', type='text')
-            .form-group
-              input.form-control(name='password', placeholder='Password', size=15, type='password')
-            button.btn.btn-primary(type='submit') Log In
-            a.btn.btn-secondary(href='/change') Change Password
-            a.btn.btn-secondary(href='/register') Register
+    .row
+      .form.col-md-12.inner
+        form(action='/login', method='post')
+          .form-group
+            input.form-control(autocomplete='off', autofocus='', name='username', size=15, placeholder='Username', type='text')
+          .form-group
+            input.form-control(name='password', placeholder='Password', size=15, type='password')
+          button.btn.btn-primary(type='submit') Log In
+          a.btn.btn-secondary(href='/change') Change Password
+          a.btn.btn-secondary(href='/register') Register

@@ -9,6 +9,7 @@ html
 
     link(rel='stylesheet', href='https://use.fontawesome.com/releases/v5.0.13/css/all.css', integrity='sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp', crossorigin='anonymous')
     link(rel='stylesheet', href='/stylesheets/style.css')
+    link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css')
     script(src='https://code.jquery.com/jquery-3.3.1.min.js', integrity='sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=', crossorigin='anonymous')
 
     script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js', integrity='sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q', crossorigin='anonymous')
@@ -16,4 +17,17 @@ html
 
     script(src='/javascripts/script.js')
   body
+    if message
+      #messageModal(class="modal fade")
+        div(class="modal-dialog")
+          div(class="modal-content")
+            div(class="modal-header")
+              h4(class="modal-title titleMessage") #{messageHead}
+              button(type="button" class="close" data-dismiss="modal" aria-hidden="true") &times;
+
+            div(class="modal-body bodyMessage")
+                p #{message}
+
+            div(class="modal-footer")
+              button(type="button" class="btn btn-default" data-dismiss="modal") OK
     block content
