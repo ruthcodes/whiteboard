@@ -107,7 +107,7 @@ block content
 
         div(class="modal-body bodyNew")
 
-            p Start new drawing? This will erase anything not saved.
+            p Start new drawing? This will erase any unsaved changes.
 
         div(class="modal-footer")
           button(type="button" class="btn btn-default" data-dismiss="modal") Cancel
@@ -181,6 +181,6 @@ block content
                 p.logged You are not logged in. Click the person button to login and save your drawings, or access previous ones
               else
                 p.logged
-                  |Logged in as 
+                  |Logged in as
                   span.userDeco #{user}
                   |. Click the person button to logout
