@@ -221,9 +221,9 @@ router.post('/change', function(req, res, next) {
                 title: 'Success!',
                 message: 'Password changed'
               })
-              return res.redirect('login', {messageHead: "Success", message:"Password changed"})
+              return res.render('login', {messageHead: "Success", message:"Password changed"})
             })
-            connection.end();
+
           });
         }
       });
