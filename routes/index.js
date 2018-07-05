@@ -22,14 +22,14 @@ var connection = mysql.createConnection({
 return connection;
 }
 
-var sess;
+
 
 router.get('/open', function(req,res){
-  if (sess){
+  if (req.session.username){
     var connection = db();
-    connection.query("SELECT * FROM whiteboards WHERE userId = ?", sess.userId, function(err, results){
+    connection.query("SELECT * FROM whiteboards WHERE userId = ?", req.session.userId, function(err, results){
 
-      res.send({user: sess.username, userId: sess.userId, rows: results});
+      res.send({user: req.session.username, userId: req.session.userId, rows: results});
     })
     connection.end();
   }
@@ -38,14 +38,15 @@ router.get('/open', function(req,res){
 
 /* GET home page. */
 router.get('/', function(req, res) {
+  console.log(req.session)
 
-  if (!sess){
+  if (!req.session.username){
     res.render('index');
   } else {
     //set the user details for homepage based on logged in user
     var connection = db();
-    connection.query("SELECT whiteboardname FROM whiteboards WHERE userId = ?", sess.userId, function(err, results){
-      res.render('index', {user: sess.username, userId: sess.userId});
+    connection.query("SELECT whiteboardname FROM whiteboards WHERE userId = ?", req.session.userId, function(err, results){
+      res.render('index', {user: req.session.username, userId: req.session.userId});
     })
     connection.end();
   }
@@ -75,7 +76,7 @@ router.post('/save', function(req, res){
       function(err, results){
         if(!results.length){
           // INSERT new drawing into whiteboard database
-          var newDraw = {userid: sess.userId, whiteboardname: req.body.drawingName, whiteboardlines: req.body.whiteboardlines};
+          var newDraw = {userid: req.session.userId, whiteboardname: req.body.drawingName, whiteboardlines: req.body.whiteboardlines};
 
           connection.query("INSERT INTO whiteboards SET ?", newDraw, function(err, res){
             console.log("Inserted new drawing")
@@ -98,8 +99,8 @@ router.post('/save', function(req, res){
 // get login page
 router.get('/login', function(req, res, next){
   console.log("getting login")
-  if(sess){
-    sess = null;
+  if(req.session.username){
+
     req.session.destroy();
     notifier.notify({
       title: 'Status',
@@ -156,9 +157,11 @@ router.post('/login', function(req, res, next) {
               return res.render('login',{messageHead: "Error", message:"Password is incorrect"} );
 
             } else {
-              sess = req.session;
-              sess.username = req.body.username;
-              sess.userId = results[0]['userid'];
+
+              req.session.username = req.body.username;
+
+              req.session.userId = results[0]['userid'];
+
 
               return res.redirect('/')
             }

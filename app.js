@@ -21,12 +21,12 @@ var mysql = require('mysql')
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-app.use(cookieParser());
+
 app.use(session({
   secret: 'hello',
   resave: false,
   saveUninitialized: true,
-  cookie: { secure: true }
+  cookie: { secure: false }
 }));
 
 // to parse form submits
@@ -58,8 +58,6 @@ app.use(function(err, req, res, next) {
   //res.sendFile('error');
 });
 */
-const port = process.env.PORT || 8080;
-app.listen(port, () => {
-  console.log('Express server listening on port', port)
-});
+
+
 module.exports = app;
