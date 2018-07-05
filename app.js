@@ -3,6 +3,7 @@ var express = require('express');
 
 var session = require('express-session');
 var RedisStore = require('connect-redis')(session);
+var redis = require('redis');
 
 var path = require('path');
 var cookieParser = require('cookie-parser');
@@ -12,6 +13,7 @@ var indexRouter = require('./routes/index');
 
 
 var app = express();
+var client = redis.createClient();
 var bodyParser = require('body-parser');
 
 var mysql = require('mysql')
@@ -24,7 +26,7 @@ app.set('view engine', 'jade');
 
 
 app.use(session({
-  store: new redisStore({ host: 'localhost', port: 6379, client: client}),
+  store: new RedisStore({ host: 'localhost', port: 6379, client: client}),
   secret: 'hello',
   resave: false,
   saveUninitialized: false,
