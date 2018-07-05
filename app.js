@@ -27,7 +27,7 @@ app.use(session({
   store: new redisStore({ host: 'localhost', port: 6379, client: client}),
   secret: 'hello',
   resave: false,
-  saveUninitialized: true,
+  saveUninitialized: false,
   cookie: { secure: false }
 }));
 
