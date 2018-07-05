@@ -2,6 +2,7 @@ var createError = require('http-errors');
 var express = require('express');
 
 var session = require('express-session');
+var RedisStore = require('connect-redis')(session);
 
 var path = require('path');
 var cookieParser = require('cookie-parser');
@@ -23,6 +24,7 @@ app.set('view engine', 'jade');
 
 
 app.use(session({
+  store: new redisStore({ host: 'localhost', port: 6379, client: client}),
   secret: 'hello',
   resave: false,
   saveUninitialized: true,
