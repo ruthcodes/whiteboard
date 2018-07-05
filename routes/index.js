@@ -25,11 +25,13 @@ return connection;
 
 
 router.get('/open', function(req,res){
-  if (req.session.username){
-    var connection = db();
-    connection.query("SELECT * FROM whiteboards WHERE userId = ?", req.session.userId, function(err, results){
+  var sess = req.session;
 
-      res.send({user: req.session.username, userId: req.session.userId, rows: results});
+  if (sess.username){
+    var connection = db();
+    connection.query("SELECT * FROM whiteboards WHERE userId = ?", sess.userId, function(err, results){
+
+      res.send({user: sess.username, userId: sess.userId, rows: results});
     })
     connection.end();
   }
@@ -38,21 +40,22 @@ router.get('/open', function(req,res){
 
 /* GET home page. */
 router.get('/', function(req, res) {
-  console.log(req.session)
+  var sess = req.session;
 
-  if (!req.session.username){
+  if (!sess.username){
     res.render('index');
   } else {
     //set the user details for homepage based on logged in user
     var connection = db();
-    connection.query("SELECT whiteboardname FROM whiteboards WHERE userId = ?", req.session.userId, function(err, results){
-      res.render('index', {user: req.session.username, userId: req.session.userId});
+    connection.query("SELECT whiteboardname FROM whiteboards WHERE userId = ?", sess.userId, function(err, results){
+      res.render('index', {user: sess.username, userId: sess.userId});
     })
     connection.end();
   }
 })
 
 router.post('/delete', function(req,res){
+
   var connection = db();
   connection.query("DELETE FROM whiteboards WHERE whiteboardname = ?", req.body.drawingName, function(err,results){
     console.log(req.body.drawingName);
@@ -62,6 +65,7 @@ router.post('/delete', function(req,res){
 
 // user saves drawing
 router.post('/save', function(req, res){
+  var sess = req.session;
   // get name of drawing from form
   if(!req.body.drawingName){
     notifier.notify({
@@ -76,7 +80,7 @@ router.post('/save', function(req, res){
       function(err, results){
         if(!results.length){
           // INSERT new drawing into whiteboard database
-          var newDraw = {userid: req.session.userId, whiteboardname: req.body.drawingName, whiteboardlines: req.body.whiteboardlines};
+          var newDraw = {userid: sess.userId, whiteboardname: req.body.drawingName, whiteboardlines: req.body.whiteboardlines};
 
           connection.query("INSERT INTO whiteboards SET ?", newDraw, function(err, res){
             console.log("Inserted new drawing")
@@ -98,10 +102,11 @@ router.post('/save', function(req, res){
 
 // get login page
 router.get('/login', function(req, res, next){
+  var sess = req.session;
   console.log("getting login")
-  if(req.session.username){
+  if(sess.username){
 
-    req.session.destroy();
+    sess.destroy();
     notifier.notify({
       title: 'Status',
       message: 'Logged out!'
