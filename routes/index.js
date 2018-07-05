@@ -162,10 +162,11 @@ router.post('/login', function(req, res, next) {
               return res.render('login',{messageHead: "Error", message:"Password is incorrect"} );
 
             } else {
+              var sess = req.session;
 
-              req.session.username = req.body.username;
+              sess.username = req.body.username;
 
-              req.session.userId = results[0]['userid'];
+              sess.userId = results[0]['userid'];
 
 
               return res.redirect('/')
