@@ -3,7 +3,7 @@ var router = express.Router();
 var path = require('path');
 var config = require('../config.js');
 const bcrypt = require('bcryptjs');
-
+var session = require('express-session');
 
 
 const notifier = require('node-notifier');
