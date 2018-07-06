@@ -2,8 +2,7 @@ var createError = require('http-errors');
 var express = require('express');
 
 var session = require('express-session');
-var RedisStore = require('connect-redis')(session);
-var redis = require('redis');
+
 
 var path = require('path');
 var cookieParser = require('cookie-parser');
@@ -13,7 +12,8 @@ var indexRouter = require('./routes/index');
 
 
 var app = express();
-var client = redis.createClient();
+
+const uuidv1 = require('uuid/v1');
 var bodyParser = require('body-parser');
 
 var mysql = require('mysql')
@@ -26,7 +26,7 @@ app.set('view engine', 'jade');
 
 
 app.use(session({
-  store: new RedisStore({ host: 'localhost', port: 6379, client: client}),
+  genid: function(req) { return uuidv1(); },
   secret: 'hello',
   resave: false,
   saveUninitialized: false,
@@ -36,6 +36,7 @@ app.use(session({
 // to parse form submits
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true }));
+
 app.use('/', indexRouter);
 
 

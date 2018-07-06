@@ -3,7 +3,6 @@ var router = express.Router();
 var path = require('path');
 var config = require('../config.js');
 const bcrypt = require('bcryptjs');
-var session = require('express-session');
 
 
 const notifier = require('node-notifier');
@@ -27,6 +26,7 @@ return connection;
 router.get('/open', function(req,res){
   var sess = req.session;
 
+
   if (sess.username){
     var connection = db();
     connection.query("SELECT * FROM whiteboards WHERE userId = ?", sess.userId, function(err, results){
@@ -41,6 +41,7 @@ router.get('/open', function(req,res){
 /* GET home page. */
 router.get('/', function(req, res) {
   var sess = req.session;
+  console.log(sess.id);
 
   if (!sess.username){
     res.render('index');
@@ -104,6 +105,7 @@ router.post('/save', function(req, res){
 router.get('/login', function(req, res, next){
   var sess = req.session;
   console.log("getting login")
+  console.log(sess.id);
   if(sess.username){
 
     sess.destroy();
@@ -120,7 +122,8 @@ router.get('/login', function(req, res, next){
 
 //submit login
 router.post('/login', function(req, res, next) {
-
+  var sess = req.session;
+  console.log(sess.id);
   // check user entered name and Password
   if (!req.body.username){
     notifier.notify({
@@ -163,6 +166,7 @@ router.post('/login', function(req, res, next) {
 
             } else {
               var sess = req.session;
+
 
               sess.username = req.body.username;
 
