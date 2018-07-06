@@ -1,7 +1,4 @@
 var createError = require('http-errors');
-var express = require('express');
-
-var session = require('express-session');
 
 
 var path = require('path');
@@ -10,15 +7,25 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 
-
-var app = express();
-
-const uuidv1 = require('uuid/v1');
 var bodyParser = require('body-parser');
 
-var mysql = require('mysql')
+var mysql = require('mysql');
+
+var express = require('express');
+var app = express();
+var session = require('express-session');
+var MySQLStore = require('express-mysql-session')(session);
+
+var options = {
+    host: 'localhost',
+    port: 8889,
+    user: 'root',
+    password: 'root',
+    database: 'whiteboard'
+};
 
 
+var sessionStore = new MySQLStore(options);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -26,11 +33,11 @@ app.set('view engine', 'jade');
 
 
 app.use(session({
-  genid: function(req) { return uuidv1(); },
-  secret: 'hello',
+  key: 'session_cookie_name',
+  secret: 'session_cookie_secret',
+  store: sessionStore,
   resave: false,
   saveUninitialized: false,
-  cookie: { secure: false }
 }));
 
 // to parse form submits
