@@ -28,8 +28,12 @@ button a {
 
 .btn{
   border: 1px solid black;
-
 }
+
+.colour, .action{
+  background-color: white;
+}
+
 .logged{
   color: white;
   text-align: center;

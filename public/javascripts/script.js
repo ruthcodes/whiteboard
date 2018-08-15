@@ -1,4 +1,17 @@
 $(document).ready(function(){
+
+  function isMobileDevice() {
+      return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
+  };
+
+  let cell = isMobileDevice()
+
+  if (cell){
+    if(!sessionStorage.getItem("alerted")){
+      alert("Please switch to a desktop browser to use this application")
+      sessionStorage.setItem("alerted", true)
+    }
+  }
   // Show message if there is one (template will have a message modal if there is a message)
   $('#messageModal').modal('show');
 
@@ -165,6 +178,7 @@ $(document).ready(function(){
       saveCoords();
   });
 
+
   document.addEventListener("mouseup", function(){
       mouseDown = false;
       if (savedCoords.length == 1){
@@ -182,6 +196,7 @@ $(document).ready(function(){
       savedLines.push(0);
     }
   });
+
 
   window.addEventListener('mousemove', saveCoords);
 
@@ -289,8 +304,9 @@ var savedCoords = [];
 var savedLines = [];
 
 // called when user clicks on board
-function saveCoords(){
+function saveCoords(e){
   if (canDraw && mouseDown){
+      e.preventDefault();
       //push coordinates to array
       thisCoord = {'x': x, 'y': y};
       savedCoords.push(thisCoord);
